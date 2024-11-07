@@ -7,7 +7,6 @@ class Ss3 < Formula
 
   depends_on "ruby" # Specify Ruby as a dependency
 
-
   def install
     # Install all files to libexec
     libexec.install Dir["*"]

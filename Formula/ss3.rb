@@ -8,14 +8,14 @@ class Ss3 < Formula
   depends_on "ruby"
 
   def install
-    # Install the main script
-    bin.install "aws-s3-bucket-tool.rb"
+    # Install main script as `ss3`
+    bin.install "aws-s3-bucket-tool.rb" => "ss3"
 
     # Install helper files to libexec
     libexec.install "ui-helper.rb", "s3-helper.rb"
 
     # Set AWS_S3_BUCKET_TOOL_LIB environment variable in the executable script
-    (bin/"aws-s3-bucket-tool").write_env_script libexec/"aws-s3-bucket-tool.rb", AWS_S3_BUCKET_TOOL_LIB: libexec
+    (bin/"ss3").write_env_script libexec/"aws-s3-bucket-tool.rb", AWS_S3_BUCKET_TOOL_LIB: libexec
   end
 
   test do

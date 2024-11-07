@@ -2,24 +2,21 @@ class Ss3 < Formula
   desc "Interactive AWS S3 CLI tool"
   homepage "https://github.com/seamus-sloan/aws-s3-bucket-tool"
   url "https://github.com/seamus-sloan/aws-s3-bucket-tool/archive/refs/tags/v1.0.0.tar.gz"
-  sha256 "68910c30ea9adcc267a7057617637de12eb42409b93d9d20fd6e4869d96fc8b0"
+  sha256 "2e38968f136afdecb362cfdc884ebce965ebdea27d618499a66a589fcd2851b6"
   license "MIT"
 
   depends_on "ruby"
 
   def install
-    # Install main script as `ss3`
-    bin.install "aws-s3-bucket-tool.rb" => "ss3"
+    # Install helper files and main script to libexec
+    libexec.install "aws-s3-bucket-tool.rb", "ui-helper.rb", "s3-helper.rb"
 
-    # Install helper files to libexec
-    libexec.install "ui-helper.rb", "s3-helper.rb"
-
-    # Set AWS_S3_BUCKET_TOOL_LIB environment variable in the executable script
-    (bin/"ss3").write_env_script libexec/"aws-s3-bucket-tool.rb", AWS_S3_BUCKET_TOOL_LIB: libexec
+    # Create a wrapper script in bin
+    (bin/"ss3").write_env_script libexec/"aws-s3-bucket-tool.rb", PATH: "#{libexec}:$PATH"
   end
 
   test do
-    # Basic test to check if the tool is accessible
+    # Test if the tool runs and shows a usage message or similar output
     assert_match "Usage", shell_output("#{bin}/ss3 --help")
   end
 end

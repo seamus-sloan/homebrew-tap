@@ -2,7 +2,7 @@ class Ss3 < Formula
   desc "Interactive AWS S3 CLI tool"
   homepage "https://github.com/seamus-sloan/aws-s3-bucket-tool" # Link to the main repo or homepage for ss3
   url "https://github.com/seamus-sloan/aws-s3-bucket-tool/archive/refs/tags/v1.0.0.tar.gz" # Link to a tagged release
-  sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5" # SHA256 of the release archive
+  sha256 "e21fe5ccf6c586ce8e6b4a0fb9f8c41c5375caef509d16e74d79d45835d39cbd" # SHA256 of the release archive
   license "MIT"
 
   depends_on "ruby" # Specify Ruby as a dependency

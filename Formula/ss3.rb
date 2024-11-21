@@ -1,56 +1,42 @@
 class Ss3 < Formula
   desc "Command-line S3 bucket explorer"
   homepage "https://github.com/seamus-sloan/aws-s3-bucket-tool"
-  url "https://github.com/seamus-sloan/aws-s3-bucket-tool/archive/refs/tags/v2.0.0.tar.gz"
-  sha256 "993f3cfc3399ae5b19ddae61d86d5b7f7a344e4e0c6b9ac828581549b9b9bdc7"
+  url "https://github.com/seamus-sloan/aws-s3-bucket-tool/archive/refs/tags/v2.0.1.tar.gz"
+  sha256 "b124fa62c9ae33d9b42dfd5c21dc903475e7b54f0c65bb1b1a67835e6c461819"
   license "MIT"
 
   depends_on "ruby"
-  # depends_on "bundler" => :build
-
-  # def install
-  #   # Install gem dependencies using Bundler in standalone mode
-  #   system "bundle", "install", "--standalone", "--path", libexec
-
-  #   # Install the 'bundle' directory
-  #   # This is generated from `bundle install --standalone` in the script's repository.
-  #   libexec.install "bundle"
-
-  #   # Install Ruby class files
-  #   lib.install "s3-navigator.rb", "ui-navigator.rb"
-
-  #   # Install the main executable into libexec
-  #   libexec.install "ss3.rb"
-
-  #   # Adjust the ss3.rb script
-  #   inreplace libexec/"ss3.rb" do |s|
-  #     # Adjust the load path to include the lib directory
-  #     s.gsub!("$LOAD_PATH.unshift(File.expand_path('../lib', __dir__))", "$LOAD_PATH.unshift('#{lib}')")
-  #   end
-
-  #   # Create a wrapper script in bin to point to libexec/ss3.rb
-  #   (bin/"ss3").write_env_script libexec/"ss3.rb", PATH: "#{Formula["ruby"].opt_bin}:$PATH"
-
-  #   # Ensure the ss3.rb script in libexec is executable
-  #   chmod "+x", libexec/"ss3.rb"
-  # end
-
-
 
   def install
-    # Use Homebrew's Ruby
-    ENV["PATH"] = "#{Formula["ruby"].opt_bin}:#{ENV["PATH"]}"
+    # Install all project files into libexec
+    libexec.install Dir["*"]
 
-    # Install gem dependencies globally (not recommended)
-    system "bundle", "install"
+    # Set up environment variables for Bundler
+    ENV["GEM_HOME"] = libexec/"vendor/bundle"
+    ENV["GEM_PATH"] = ENV["GEM_HOME"]
+    ENV["BUNDLE_GEMFILE"] = libexec/"Gemfile"
+    ENV["BUNDLE_PATH"] = ENV["GEM_HOME"]
+    ENV["BUNDLE_APP_CONFIG"] = libexec/".bundle"
 
-    # Install files into bin
-    bin.install "ss3.rb"
-    bin.install "s3-navigator.rb", "ui-navigator.rb"
+    # Change directory to libexec for Bundler installation
+    cd libexec do
+      # Configure Bundler settings
+      system "bundle", "config", "set", "--local", "deployment", "true"
+      system "bundle", "config", "set", "--local", "without", "development test"
 
-    # Rename and make executable
-    mv bin/"ss3.rb", bin/"ss3"
-    chmod "+x", bin/"ss3"
+      # Install gem dependencies into vendor/bundle
+      system "bundle", "install"
+    end
+
+    # Create a wrapper script in bin
+    (bin/"ss3").write_env_script libexec/"ss3", {
+      GEM_HOME:        ENV["GEM_HOME"],
+      GEM_PATH:        ENV["GEM_PATH"],
+      BUNDLE_GEMFILE:  ENV["BUNDLE_GEMFILE"],
+      BUNDLE_PATH:     ENV["BUNDLE_PATH"],
+      BUNDLE_APP_CONFIG: ENV["BUNDLE_APP_CONFIG"],
+      RUBYLIB:         libexec.to_s
+    }
   end
 
   test do

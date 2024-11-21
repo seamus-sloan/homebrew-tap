@@ -8,26 +8,32 @@ class Ss3 < Formula
   depends_on "ruby"
 
   def install
+    # Use Homebrew's Ruby
+    ruby_bin = Formula["ruby"].opt_bin/"ruby"
+  
+    # Set PATH to prioritize Homebrew's Ruby
+    ENV.prepend_path "PATH", Formula["ruby"].opt_bin
+  
     # Install all project files into libexec
     libexec.install Dir["*"]
-
+  
     # Set up environment variables for Bundler
     ENV["GEM_HOME"] = libexec/"vendor/bundle"
     ENV["GEM_PATH"] = ENV["GEM_HOME"]
     ENV["BUNDLE_GEMFILE"] = libexec/"Gemfile"
     ENV["BUNDLE_PATH"] = ENV["GEM_HOME"]
     ENV["BUNDLE_APP_CONFIG"] = libexec/".bundle"
-
+  
     # Change directory to libexec for Bundler installation
     cd libexec do
-      # Configure Bundler settings
-      system "bundle", "config", "set", "--local", "deployment", "true"
-      system "bundle", "config", "set", "--local", "without", "development test"
-
+      # Use Homebrew's Ruby for Bundler commands
+      system ruby_bin, "-S", "bundle", "config", "set", "--local", "deployment", "true"
+      system ruby_bin, "-S", "bundle", "config", "set", "--local", "without", "development test"
+  
       # Install gem dependencies into vendor/bundle
-      system "bundle", "install"
+      system ruby_bin, "-S", "bundle", "install"
     end
-
+  
     # Create a wrapper script in bin
     (bin/"ss3").write_env_script libexec/"ss3", {
       GEM_HOME:        ENV["GEM_HOME"],

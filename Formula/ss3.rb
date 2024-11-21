@@ -1,8 +1,8 @@
 class Ss3 < Formula
   desc "Command-line S3 bucket explorer"
   homepage "https://github.com/seamus-sloan/aws-s3-bucket-tool"
-  url "https://github.com/seamus-sloan/aws-s3-bucket-tool/archive/refs/tags/v2.0.1.tar.gz"
-  sha256 "b124fa62c9ae33d9b42dfd5c21dc903475e7b54f0c65bb1b1a67835e6c461819"
+  url "https://github.com/seamus-sloan/aws-s3-bucket-tool/archive/refs/tags/v2.0.2.tar.gz"
+  sha256 "c8c2945b35689852b45b433371dedf63863a820b8087f9228df8354e51caafdc"
   license "MIT"
 
   depends_on "ruby"
